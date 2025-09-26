@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { useError } from '../context/ErrorContext';
 import { parseError, ERROR_TYPES } from '../utils/errorHandler';
 
@@ -56,10 +56,16 @@ export const useApiCall = (options = {}) => {
           retry && 
           attempts < maxAttempts && 
           (parsedError.type === ERROR_TYPES.NETWORK || 
+           parsedError.type === ERROR_TYPES.RATE_LIMIT ||
            (parsedError.type === ERROR_TYPES.SERVER && err.status >= 500));
 
         if (shouldRetry) {
-          await new Promise(resolve => setTimeout(resolve, retryDelay * attempts));
+          // Use longer delay for rate limiting errors
+          const delayTime = parsedError.type === ERROR_TYPES.RATE_LIMIT 
+            ? retryDelay * attempts * 3 // 3x longer delay for rate limits
+            : retryDelay * attempts;
+          
+          await new Promise(resolve => setTimeout(resolve, delayTime));
           continue;
         }
 
@@ -190,11 +196,11 @@ export const useFetch = (fetchFn, dependencies = [], options = {}) => {
   }, [execute, fetchFn]);
 
   // Auto-fetch on mount and dependency changes
-  React.useEffect(() => {
+  useEffect(() => {
     if (immediate) {
       fetch();
     }
-  }, [fetch, immediate, ...dependencies]);
+  }, [immediate, ...dependencies]); // Removed 'fetch' from dependencies to prevent infinite loop
 
   return {
     data,

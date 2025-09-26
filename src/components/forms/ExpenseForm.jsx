@@ -225,7 +225,7 @@ const ExpenseForm = ({ initialData = {}, isEdit = false }) => {
     fetchCategories(() => getExpenseCategories({ isActive: true }), {
       context: { component: 'ExpenseForm', action: 'fetchCategories' }
     });
-  }, [fetchCategories]);
+  }, []); // Empty dependency array - only run on mount
 
   // Development helper function to reload categories
   const reloadCategories = async () => {

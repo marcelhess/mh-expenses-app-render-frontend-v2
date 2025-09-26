@@ -9,6 +9,7 @@ export const ERROR_TYPES = {
   AUTHENTICATION: 'AUTHENTICATION',
   AUTHORIZATION: 'AUTHORIZATION',
   VALIDATION: 'VALIDATION',
+  RATE_LIMIT: 'RATE_LIMIT',
   SERVER: 'SERVER',
   CLIENT: 'CLIENT',
   UNKNOWN: 'UNKNOWN'
@@ -67,6 +68,10 @@ export const parseError = (error) => {
       type = ERROR_TYPES.AUTHORIZATION;
       severity = ERROR_SEVERITY.HIGH;
       message = 'You do not have permission to perform this action.';
+    } else if (status === 429) {
+      type = ERROR_TYPES.RATE_LIMIT;
+      severity = ERROR_SEVERITY.MEDIUM;
+      message = 'Too many requests. Please wait a moment before trying again.';
     } else if (status >= 400 && status < 500) {
       type = ERROR_TYPES.VALIDATION;
       severity = ERROR_SEVERITY.MEDIUM;
@@ -105,6 +110,8 @@ export const getErrorMessage = (error) => {
       return 'Your session has expired. Please log in again.';
     case ERROR_TYPES.AUTHORIZATION:
       return 'You do not have permission to perform this action.';
+    case ERROR_TYPES.RATE_LIMIT:
+      return 'Too many requests. Please wait a moment before trying again.';
     case ERROR_TYPES.VALIDATION:
       return parsedError.message || 'Please check your input and try again.';
     case ERROR_TYPES.SERVER:

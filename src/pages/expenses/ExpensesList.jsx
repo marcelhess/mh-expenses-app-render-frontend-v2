@@ -63,7 +63,7 @@ const ExpensesList = () => {
     fetchCategories(() => getExpenseCategories(), {
       context: { component: 'ExpensesList', action: 'fetchCategories' }
     });
-  }, [fetchCategories]);
+  }, []); // Empty dependency array - only run on mount
 
   // Use unified error handling for fetching expenses
   const { execute: fetchExpenses, loading, error } = useApiCall({
@@ -128,7 +128,7 @@ const ExpensesList = () => {
     fetchExpenses(() => getExpenses(queryParams), {
       context: { component: 'ExpensesList', action: 'fetchExpenses' }
     });
-  }, [filters, currentPage, itemsPerPage, fetchExpenses]);
+  }, [filters, currentPage, itemsPerPage]); // Removed fetchExpenses to prevent infinite loop
 
   // Format date to display in a user-friendly format
   const formatDate = (dateString) => {
