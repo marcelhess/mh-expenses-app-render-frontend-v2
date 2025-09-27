@@ -55,18 +55,22 @@ const ExpensesList = () => {
   const { execute: fetchCategories } = useApiCall({
     onSuccess: (data) => {
       setCategories(data.categories || []);
-    }
+    },
   });
 
   // Fetch categories on component mount
   useEffect(() => {
     fetchCategories(() => getExpenseCategories(), {
-      context: { component: 'ExpensesList', action: 'fetchCategories' }
+      context: { component: "ExpensesList", action: "fetchCategories" },
     });
   }, []); // Empty dependency array - only run on mount
 
   // Use unified error handling for fetching expenses
-  const { execute: fetchExpenses, loading, error } = useApiCall({
+  const {
+    execute: fetchExpenses,
+    loading,
+    error,
+  } = useApiCall({
     onSuccess: (data) => {
       // Handle the response data
       if (data.data) {
@@ -93,7 +97,7 @@ const ExpensesList = () => {
       setExpenses([]);
       setTotalItems(0);
       setPagination(null);
-    }
+    },
   });
 
   // Fetch expenses with filters and pagination
@@ -126,7 +130,7 @@ const ExpensesList = () => {
 
     // Fetching expenses with filters
     fetchExpenses(() => getExpenses(queryParams), {
-      context: { component: 'ExpensesList', action: 'fetchExpenses' }
+      context: { component: "ExpensesList", action: "fetchExpenses" },
     });
   }, [filters, currentPage, itemsPerPage]); // Removed fetchExpenses to prevent infinite loop
 
